@@ -1,3 +1,4 @@
 # youth-sports-clustering
-final data science
+app.py
 sports_cluster_result.csv
+requirements.txt
