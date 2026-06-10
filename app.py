@@ -469,3 +469,4 @@ streamlit run app.py
 
 ---
     """)
+pip install koreanize-matplotlib
