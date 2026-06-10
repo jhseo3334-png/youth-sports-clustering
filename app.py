@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
-import koreanize_matplotlib
+import plotly.express as px
 
 # 페이지 기본 설정
 st.set_page_config(
@@ -20,7 +18,6 @@ st.markdown("""
     h2 { color: #2563eb; border-bottom: 2px solid #bfdbfe; padding-bottom: 10px; margin-top: 30px; }
     h3 { color: #334155; margin-top: 20px; }
     .cluster-card { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 5px solid; margin-bottom: 20px; }
-    .highlight { background-color: #dbeafe; padding: 5px 10px; border-radius: 5px; font-weight: bold; color: #1e40af; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -70,27 +67,33 @@ with tab1:
 with tab2:
     st.header("📈 군집별 인원 분포")
     
-    # PDF에 기재된 하드코딩 데이터
+    # 데이터 생성
     clusters = ['소극적 참여형', '학교 중심 참여형', '적극 참여형', '집중 운동형']
     counts = [467, 438, 490, 108]
-    colors = ['#94a3b8', '#3b82f6', '#10b981', '#f59e0b']
+    
+    df_chart = pd.DataFrame({
+        '군집명': clusters,
+        '인원수': counts
+    })
     
     col_chart, col_stat = st.columns([2, 1])
     
     with col_chart:
-        fig, ax = plt.subplots(figsize=(10, 5))
-        bars = ax.bar(clusters, counts, color=colors, width=0.6)
+        # 폰트 깨짐이 없는 Plotly 그래프 사용
+        fig = px.bar(df_chart, x='군집명', y='인원수', text='인원수',
+                     color='군집명',
+                     color_discrete_sequence=['#94a3b8', '#3b82f6', '#10b981', '#f59e0b'])
         
-        for bar in bars:
-            height = bar.get_height()
-            ax.text(bar.get_x() + bar.get_width()/2., height + 5,
-                    f'{height}명', ha='center', va='bottom', fontweight='bold')
-            
-        ax.set_ylabel("인원수 (명)", fontweight='bold')
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
-        plt.tight_layout()
-        st.pyplot(fig)
+        # 그래프 디자인 다듬기
+        fig.update_traces(textposition='outside', textfont_size=14, textfont_color='black')
+        fig.update_layout(
+            showlegend=False, 
+            xaxis_title="", 
+            yaxis_title="인원수 (명)",
+            plot_bgcolor='rgba(0,0,0,0)',
+            margin=dict(t=20, b=20, l=0, r=0)
+        )
+        st.plotly_chart(fig, use_container_width=True)
         
     with col_stat:
         st.markdown("<br>", unsafe_allow_html=True)
