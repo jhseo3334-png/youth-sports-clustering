@@ -589,7 +589,6 @@ with tab3:
         <div style="background-color: #94a3b833; padding: 20px; border-radius: 10px;">
         <strong>📊 기대 효과</strong><br><br>
         <span class="success-badge">참여율 30→50%</span><br>
-        <span class="info-badge">예산: 약 5억원</span><br>
         <span class="warning-badge">1년 내 적극형 이동</span>
         </div>
         """, unsafe_allow_html=True)
@@ -618,7 +617,6 @@ with tab3:
         <div style="background-color: #3b82f633; padding: 20px; border-radius: 10px;">
         <strong>📊 기대 효과</strong><br><br>
         <span class="success-badge">지역활동 18→45%</span><br>
-        <span class="info-badge">예산: 약 3억원</span><br>
         <span class="warning-badge">적극형 전환율 35%</span>
         </div>
         """, unsafe_allow_html=True)
@@ -647,7 +645,6 @@ with tab3:
         <div style="background-color: #10b98133; padding: 20px; border-radius: 10px;">
         <strong>📊 기대 효과</strong><br><br>
         <span class="success-badge">참여지속율 94→98%</span><br>
-        <span class="info-badge">예산: 약 8억원</span><br>
         <span class="warning-badge">지역 스포츠 문화 활성화</span>
         </div>
         """, unsafe_allow_html=True)
@@ -676,7 +673,6 @@ with tab3:
         <div style="background-color: #f59e0b33; padding: 20px; border-radius: 10px;">
         <strong>📊 기대 효과</strong><br><br>
         <span class="success-badge">진로 준비율 80%</span><br>
-        <span class="info-badge">예산: 약 2억원</span><br>
         <span class="warning-badge">운동선수 배출 증대</span>
         </div>
         """, unsafe_allow_html=True)
@@ -697,29 +693,19 @@ with tab3:
     
     st.divider()
     
-    st.markdown("### 💰 총 정책 예산 및 기대 효과")
+    st.markdown("### 📌 기대 효과 및 목표")
     
-    budget_col1, budget_col2, budget_col3 = st.columns(3)
+    effect_col1, effect_col2 = st.columns(2)
     
-    with budget_col1:
-        st.markdown("""
-        <div class="stats-box">
-        <strong>💵 총 투입 예산</strong><br><br>
-        <span style="font-size: 1.5em;">약 18억원</span><br>
-        <span style="font-size: 0.85em;">(연 1회)</span>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with budget_col2:
+    with effect_col1:
         st.markdown("""
         <div class="stats-box">
         <strong>👥 정책 대상</strong><br><br>
-        <span style="font-size: 1.5em;">1,503명</span><br>
-        <span style="font-size: 0.85em;">(1인당 약 12만원)</span>
+        <span style="font-size: 1.5em;">1,503명</span>
         </div>
         """, unsafe_allow_html=True)
     
-    with budget_col3:
+    with effect_col2:
         st.markdown("""
         <div class="stats-box">
         <strong>📈 기대 효과</strong><br><br>
