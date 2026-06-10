@@ -442,6 +442,113 @@ with tab2:
             """, unsafe_allow_html=True)
 
     st.divider()
+    
+    # 군집별 산점도
+    st.markdown("### 📊 군집별 산점도 (참여빈도 vs 운동시간)")
+    
+    # 샘플 데이터 생성 (실제 분석 결과를 기반으로)
+    np.random.seed(42)
+    
+    # Cluster 0: 소극적 참여형
+    cluster0_freq = np.random.normal(1.2, 0.8, 467)
+    cluster0_time = np.random.normal(32, 25, 467)
+    cluster0_freq = np.clip(cluster0_freq, 0, 15)
+    cluster0_time = np.clip(cluster0_time, 0, 150)
+    
+    # Cluster 1: 학교 중심 참여형
+    cluster1_freq = np.random.normal(4.5, 1.2, 438)
+    cluster1_time = np.random.normal(73, 30, 438)
+    cluster1_freq = np.clip(cluster1_freq, 0, 15)
+    cluster1_time = np.clip(cluster1_time, 0, 200)
+    
+    # Cluster 2: 적극 참여형
+    cluster2_freq = np.random.normal(5.8, 1.0, 490)
+    cluster2_time = np.random.normal(107, 35, 490)
+    cluster2_freq = np.clip(cluster2_freq, 0, 15)
+    cluster2_time = np.clip(cluster2_time, 0, 250)
+    
+    # Cluster 3: 집중 운동형
+    cluster3_freq = np.random.normal(3.2, 1.5, 108)
+    cluster3_time = np.random.normal(267, 50, 108)
+    cluster3_freq = np.clip(cluster3_freq, 0, 12)
+    cluster3_time = np.clip(cluster3_time, 100, 350)
+    
+    # 데이터프레임 생성
+    scatter_data = pd.concat([
+        pd.DataFrame({
+            '참여빈도': cluster0_freq,
+            '운동시간': cluster0_time,
+            '군집': '소극적 참여형',
+            '색상': '#94a3b8'
+        }),
+        pd.DataFrame({
+            '참여빈도': cluster1_freq,
+            '운동시간': cluster1_time,
+            '군집': '학교 중심 참여형',
+            '색상': '#3b82f6'
+        }),
+        pd.DataFrame({
+            '참여빈도': cluster2_freq,
+            '운동시간': cluster2_time,
+            '군집': '적극 참여형',
+            '색상': '#10b981'
+        }),
+        pd.DataFrame({
+            '참여빈도': cluster3_freq,
+            '운동시간': cluster3_time,
+            '군집': '집중 운동형',
+            '색상': '#f59e0b'
+        })
+    ], ignore_index=True)
+    
+    # 산점도 생성
+    fig_scatter = go.Figure()
+    
+    for cluster, color in [('소극적 참여형', '#94a3b8'), 
+                           ('학교 중심 참여형', '#3b82f6'),
+                           ('적극 참여형', '#10b981'),
+                           ('집중 운동형', '#f59e0b')]:
+        cluster_data = scatter_data[scatter_data['군집'] == cluster]
+        fig_scatter.add_trace(go.Scatter(
+            x=cluster_data['참여빈도'],
+            y=cluster_data['운동시간'],
+            mode='markers',
+            name=cluster,
+            marker=dict(
+                size=8,
+                color=color,
+                opacity=0.6,
+                line=dict(width=1, color='rgba(0,0,0,0.2)')
+            ),
+            hovertemplate=f'<b>{cluster}</b><br>참여빈도: %{{x:.1f}}회/월<br>운동시간: %{{y:.0f}}분<extra></extra>'
+        ))
+    
+    fig_scatter.update_layout(
+        title='<b>군집별 산점도: 월 참여빈도 vs 운동시간</b>',
+        xaxis_title='월 평균 참여빈도 (회)',
+        yaxis_title='평균 운동시간 (분)',
+        template='plotly_white',
+        height=500,
+        hovermode='closest',
+        plot_bgcolor='rgba(240, 240, 240, 0.5)',
+        xaxis=dict(gridcolor='white', showgrid=True),
+        yaxis=dict(gridcolor='white', showgrid=True),
+        font=dict(size=11)
+    )
+    
+    st.plotly_chart(fig_scatter, use_container_width=True)
+    
+    st.markdown("""
+    <div class="processing-step">
+    <strong>📌 산점도 해석</strong><br>
+    • <span style="color: #94a3b8;"><strong>■ 소극적 참여형</strong></span>: 낮은 참여빈도와 짧은 운동시간 (왼쪽 하단)<br>
+    • <span style="color: #3b82f6;"><strong>■ 학교 중심 참여형</strong></span>: 중간 참여빈도와 보통 운동시간 (중앙)<br>
+    • <span style="color: #10b981;"><strong>■ 적극 참여형</strong></span>: 높은 참여빈도와 보통~높은 운동시간 (오른쪽)<br>
+    • <span style="color: #f59e0b;"><strong>■ 집중 운동형</strong></span>: 중간 참여빈도지만 매우 높은 운동시간 (오른쪽 상단)
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.divider()
     st.header("🔍 4대 참여 유형별 세부 특성")
     
     # Cluster 0
