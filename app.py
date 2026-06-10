@@ -4,10 +4,26 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import rcParams
+import matplotlib.font_manager as fm
 
-# 한글 폰트 설정
-rcParams['font.family'] = 'DejaVu Sans'
+# 한글 폰트 설정 - 나눔고딕 사용
+try:
+    # 나눔고딕 폰트 설정 (Windows, Mac, Linux 호환)
+    font_path = '/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc'  # Linux
+    if not os.path.exists(font_path):
+        font_path = 'C:/Windows/Fonts/malgun.ttf'  # Windows
+    if not os.path.exists(font_path):
+        font_path = '/Library/Fonts/NanumGothic.ttf'  # Mac
+    
+    fm.fontManager.addfont(font_path)
+    rcParams['font.family'] = 'Noto Sans CJK KR'
+except:
+    # 기본값으로 설정
+    rcParams['font.family'] = 'DejaVu Sans'
+
 plt.rcParams['axes.unicode_minus'] = False
+
+import os
 
 st.set_page_config(
     page_title="청소년 스포츠 참여 유형 분석",
@@ -60,6 +76,15 @@ st.title("🏃 청소년 스포츠 참여 유형 분석")
 
 # 탭 구성
 tab1, tab2, tab3 = st.tabs(["📊 분석 결과", "📋 프로젝트 정보", "📖 README"])
+
+# 변수명 매핑 (설문 번호 -> 설문 내용)
+variable_mapping = {
+    "Q15_1": "학교스포츠클럽 참여 여부",
+    "Q15_2_M2": "지역사회 스포츠 활동 참여",
+    "Q19": "정기적 운동 빈도",
+    "Q26": "1회 운동 시간",
+    "Q33": "향후 스포츠 참여 의향"
+}
 
 # ==================== TAB 1: 분석 결과 ====================
 with tab1:
@@ -151,8 +176,12 @@ with tab1:
             ]
         ].mean()
         
+        # 컬럼명을 설문 내용으로 변경
+        cluster_profile_renamed = cluster_profile.copy()
+        cluster_profile_renamed.columns = [variable_mapping[col] for col in cluster_profile_renamed.columns]
+        
         st.subheader("각 군집의 평균 특성")
-        st.dataframe(cluster_profile.round(2), use_container_width=True)
+        st.dataframe(cluster_profile_renamed.round(2), use_container_width=True)
         
         st.divider()
         
@@ -195,7 +224,7 @@ with tab1:
                 "description": [
                     "1회 운동 시간이 매우 김",
                     "특정 종목 집중형 가능성",
-                    "고강도 운동 ��호"
+                    "고강도 운동 선호"
                 ],
                 "color": "#f9ca24"
             }
@@ -312,6 +341,7 @@ pandas
 numpy
 matplotlib
 scikit-learn
+matplotlib-font-manager
     """)
 
 # ==================== TAB 3: README ====================
@@ -374,6 +404,7 @@ pandas
 numpy
 matplotlib
 scikit-learn
+matplotlib-font-manager
 ```
 
 ### 설치 방법
