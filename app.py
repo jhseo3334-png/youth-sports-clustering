@@ -7,19 +7,6 @@ from matplotlib import rcParams
 import matplotlib.font_manager as fm
 import os
 
-# 한글 폰트 설정
-plt.rcParams['font.family'] = 'DejaVu Sans'
-# 유니코드 마이너스 기호 설정
-plt.rcParams['axes.unicode_minus'] = False
-
-# 한글 폰트 설정 시도 (다양한 경로에서 찾기)
-font_paths = [
-    '/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc',  # Linux
-    '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',  # Linux
-    'C:/Windows/Fonts/malgun.ttf',  # Windows
-    '/Library/Fonts/NanumGothic.ttf',  # Mac
-]
-
 for font_path in font_paths:
     if os.path.exists(font_path):
         try:
@@ -470,3 +457,4 @@ streamlit run app.py
 ---
     """)
 pip install koreanize-matplotlib
+import koreanize_matplotlib
