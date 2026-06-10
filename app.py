@@ -6,7 +6,7 @@ import numpy as np
 from matplotlib import rcParams
 import matplotlib.font_manager as fm
 import os
-
+import koreanize_matplotlib
 for font_path in font_paths:
     if os.path.exists(font_path):
         try:
@@ -456,5 +456,4 @@ streamlit run app.py
 
 ---
     """)
-pip install koreanize-matplotlib
 import koreanize_matplotlib
