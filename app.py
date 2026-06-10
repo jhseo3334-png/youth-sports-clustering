@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import koreanize_matplotlib  # 이 한 줄이면 한글 폰트 설정 끝입니다!
+import koreanize_matplotlib
 
 st.set_page_config(
     page_title="청소년 스포츠 참여 유형 분석",
