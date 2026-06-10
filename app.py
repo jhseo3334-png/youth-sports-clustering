@@ -3,19 +3,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib import rcParams
-import matplotlib.font_manager as fm
-import os
-import koreanize_matplotlib
-for font_path in font_paths:
-    if os.path.exists(font_path):
-        try:
-            fm.fontManager.addfont(font_path)
-            if 'Noto' in font_path or 'NanumGothic' in font_path or 'malgun' in font_path:
-                plt.rcParams['font.family'] = 'DejaVu Sans'
-                break
-        except:
-            continue
+import koreanize_matplotlib  # 이 한 줄이면 한글 폰트 설정 끝입니다!
 
 st.set_page_config(
     page_title="청소년 스포츠 참여 유형 분석",
@@ -359,7 +347,7 @@ pandas
 numpy
 matplotlib
 scikit-learn
-matplotlib-font-manager
+koreanize-matplotlib
     """)
 
 # ==================== TAB 3: README ====================
@@ -403,57 +391,3 @@ with tab3:
 ---
 
 ## 📁 프로젝트 구조
-
-```
-youth-sports-clustering/
-├── README.md                      # 프로젝트 설명 문서
-├── app.py                         # Streamlit 분석 대시보드
-├── sports_cluster_result.csv      # 분석 데이터
-└── requirements.txt               # 필요 라이브러리
-```
-
----
-
-## 🛠️ 필수 라이브러리
-
-```
-streamlit
-pandas
-numpy
-matplotlib
-scikit-learn
-matplotlib-font-manager
-```
-
-### 설치 방법
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## 🚀 실행 방법
-
-```bash
-streamlit run app.py
-```
-
----
-
-## 📊 분석 결과
-
-### 4개 군집 분류
-1. **비참여 중심 집단**: 🚫 학교스포츠클럽 비참여 중심
-2. **학교 중심 참여 집단**: 🏫 학교스포츠클럽 참여 집단
-3. **적극 참여 집단**: 🌟 지역사회 스포츠 적극 참여
-4. **장시간 운동형 집단**: 💪 1회 운동 시간이 매우 긴 집단
-
----
-
-## 💡 주요 시사점
-
-청소년 스포츠 참여는 단순한 참여/비참여가 아니라 **다양한 패턴**을 보이며, 각 집단의 특성에 맞는 **맞춤형 정책**이 필요합니다.
-
----
-    """)
-import koreanize_matplotlib
