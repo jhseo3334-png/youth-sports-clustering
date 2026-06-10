@@ -7,22 +7,28 @@ from matplotlib import rcParams
 import matplotlib.font_manager as fm
 import os
 
-# 한글 폰트 설정 - 나눔고딕 사용
-try:
-    # 나눔고딕 폰트 설정 (Windows, Mac, Linux 호환)
-    font_path = '/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc'  # Linux
-    if not os.path.exists(font_path):
-        font_path = 'C:/Windows/Fonts/malgun.ttf'  # Windows
-    if not os.path.exists(font_path):
-        font_path = '/Library/Fonts/NanumGothic.ttf'  # Mac
-    
-    fm.fontManager.addfont(font_path)
-    rcParams['font.family'] = 'Noto Sans CJK KR'
-except:
-    # 기본값으로 설정
-    rcParams['font.family'] = 'DejaVu Sans'
-
+# 한글 폰트 설정
+plt.rcParams['font.family'] = 'DejaVu Sans'
+# 유니코드 마이너스 기호 설정
 plt.rcParams['axes.unicode_minus'] = False
+
+# 한글 폰트 설정 시도 (다양한 경로에서 찾기)
+font_paths = [
+    '/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc',  # Linux
+    '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',  # Linux
+    'C:/Windows/Fonts/malgun.ttf',  # Windows
+    '/Library/Fonts/NanumGothic.ttf',  # Mac
+]
+
+for font_path in font_paths:
+    if os.path.exists(font_path):
+        try:
+            fm.fontManager.addfont(font_path)
+            if 'Noto' in font_path or 'NanumGothic' in font_path or 'malgun' in font_path:
+                plt.rcParams['font.family'] = 'DejaVu Sans'
+                break
+        except:
+            continue
 
 st.set_page_config(
     page_title="청소년 스포츠 참여 유형 분석",
@@ -87,6 +93,13 @@ variable_mapping = {
 
 # 군집명 매핑
 cluster_name_mapping = {
+    0: "비참여\n중심 집단",
+    1: "학교 중심\n참여 집단",
+    2: "적극\n참여 집단",
+    3: "장시간\n운동형 집단"
+}
+
+cluster_name_full = {
     0: "비참여 중심 집단",
     1: "학교 중심 참여 집단",
     2: "적극 참여 집단",
@@ -141,33 +154,36 @@ with tab1:
         col1, col2 = st.columns([2, 1])
         
         with col1:
-            fig, ax = plt.subplots(figsize=(10, 5))
+            fig, ax = plt.subplots(figsize=(12, 6))
             colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
             
-            # 한글 군집명으로 x축 레이블 변경
-            cluster_labels = [cluster_name_mapping[i] for i in cluster_count.index]
-            bars = ax.bar(range(len(cluster_count)), cluster_count.values, color=colors, edgecolor='black', linewidth=1.5)
+            # x축 위치 설정
+            x_pos = np.arange(len(cluster_count))
+            bars = ax.bar(x_pos, cluster_count.values, color=colors, edgecolor='black', linewidth=1.5, width=0.6)
             
             # 막대 위에 값 표시
-            for bar in bars:
+            for i, bar in enumerate(bars):
                 height = bar.get_height()
                 ax.text(bar.get_x() + bar.get_width()/2., height,
                        f'{int(height)}',
-                       ha='center', va='bottom', fontweight='bold', fontsize=11)
+                       ha='center', va='bottom', fontweight='bold', fontsize=12)
             
-            ax.set_xticks(range(len(cluster_count)))
-            ax.set_xticklabels(cluster_labels, fontsize=10)
-            ax.set_xlabel("군집", fontsize=12, fontweight='bold')
-            ax.set_ylabel("인원수", fontsize=12, fontweight='bold')
+            # x축 레이블을 군집 이름으로 설정
+            ax.set_xticks(x_pos)
+            ax.set_xticklabels([cluster_name_mapping[i] for i in cluster_count.index], 
+                             fontsize=11, fontweight='bold')
+            ax.set_ylabel("인원수 (명)", fontsize=12, fontweight='bold')
             ax.set_title("군집별 인원수 분포", fontsize=14, fontweight='bold', pad=20)
             ax.grid(axis='y', alpha=0.3, linestyle='--')
+            ax.set_ylim(0, max(cluster_count.values) * 1.1)
+            
             plt.tight_layout()
-            st.pyplot(fig)
+            st.pyplot(fig, use_container_width=True)
         
         with col2:
             st.subheader("군집 통계")
             stats_data = {
-                '군집': cluster_labels,
+                '군집': [cluster_name_full[i] for i in cluster_count.index],
                 '인원수': list(cluster_count.values),
                 '비율(%)': [f"{(v/len(df)*100):.1f}%" for v in cluster_count.values]
             }
@@ -189,7 +205,7 @@ with tab1:
         ].mean()
         
         # 인덱스를 한글 이름으로 변경
-        cluster_profile.index = [cluster_name_mapping[i] for i in cluster_profile.index]
+        cluster_profile.index = [cluster_name_full[i] for i in cluster_profile.index]
         
         # 컬럼명을 설문 내용으로 변경
         cluster_profile_renamed = cluster_profile.copy()
