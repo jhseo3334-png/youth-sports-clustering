@@ -1,10 +1,88 @@
-# youth-sports-clustering
-app.py
-sports_cluster_result.csv
-requirements.txt
+# 청소년 스포츠 참여 유형 분석 (Youth Sports Clustering)
+
+## 📋 프로젝트 개요
+청소년들의 스포츠 참여 패턴을 분석하고 K-Means 군집분석을 통해 서로 다른 참여 유형을 분류하는 프로젝트입니다.
+
+---
+
+## 📊 데이터 수집
+
+### 📌 데이터 출처
+- **출처**: 한국청소년정책연구원 / 공공데이터포털
+- **조사명**: 청소년 스포츠 참여 실태 조사
+- **조사 기간**: 2023년 (조사 연도)
+- **조사 대상**: 전국 초·중·고등학교 재학 청소년
+
+### 📁 데이터 형식
+- **파일명**: `sports_cluster_result.csv`
+- **형식**: CSV (Comma Separated Values)
+- **인코딩**: UTF-8
+
+### 📈 데이터 규모
+| 항목 | 수치 |
+|------|------|
+| **표본수** | 2,500명 |
+| **변수수** | 33개 |
+| **결측치 처리** | 결측값 제거 후 분석 |
+
+### 🔍 주요 변수
+- **Q15_1**: 학교스포츠클럽 참여 여부
+- **Q15_2_M2**: 지역사회 스포츠 활동 참여
+- **Q19**: 정기적 운동 빈도
+- **Q26**: 1회 운동 시간
+- **Q33**: 향후 스포츠 참여 의향
+
+---
+
+## 📁 프로젝트 구조
+
+```
+youth-sports-clustering/
+├── README.md                      # 프로젝트 설명 문서
+├── app.py                         # Streamlit 분석 대시보드
+├── sports_cluster_result.csv      # 분석 데이터
+└── requirements.txt               # 필요 라이브러리
+```
+
+---
+
+## 🛠️ 필수 라이브러리
+
+```
 streamlit
 pandas
 numpy
 matplotlib
 scikit-learn
+```
 
+### 설치 방법
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 🚀 실행 방법
+
+```bash
+streamlit run app.py
+```
+
+---
+
+## 📊 분석 결과
+
+### 4개 군집 분류
+1. **Cluster 0**: 🚫 비참여 중심 집단
+2. **Cluster 1**: 🏫 학교 중심 참여 집단
+3. **Cluster 2**: 🌟 적극 참여 집단
+4. **Cluster 3**: 💪 장시간 운동형 집단
+
+---
+
+## 💡 주요 시사점
+
+청소년 스포츠 참여는 단순한 참여/비참여가 아니라 **다양한 패턴**을 보이며, 각 집단의 특성에 맞는 **맞춤형 정책**이 필요합니다.
+
+---
