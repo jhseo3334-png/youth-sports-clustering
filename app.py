@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import rcParams
 import matplotlib.font_manager as fm
+import os
 
 # 한글 폰트 설정 - 나눔고딕 사용
 try:
@@ -22,8 +23,6 @@ except:
     rcParams['font.family'] = 'DejaVu Sans'
 
 plt.rcParams['axes.unicode_minus'] = False
-
-import os
 
 st.set_page_config(
     page_title="청소년 스포츠 참여 유형 분석",
@@ -86,6 +85,14 @@ variable_mapping = {
     "Q33": "향후 스포츠 참여 의향"
 }
 
+# 군집명 매핑
+cluster_name_mapping = {
+    0: "비참여 중심 집단",
+    1: "학교 중심 참여 집단",
+    2: "적극 참여 집단",
+    3: "장시간 운동형 집단"
+}
+
 # ==================== TAB 1: 분석 결과 ====================
 with tab1:
     # 연구 목적
@@ -136,7 +143,10 @@ with tab1:
         with col1:
             fig, ax = plt.subplots(figsize=(10, 5))
             colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
-            bars = ax.bar(cluster_count.index, cluster_count.values, color=colors, edgecolor='black', linewidth=1.5)
+            
+            # 한글 군집명으로 x축 레이블 변경
+            cluster_labels = [cluster_name_mapping[i] for i in cluster_count.index]
+            bars = ax.bar(range(len(cluster_count)), cluster_count.values, color=colors, edgecolor='black', linewidth=1.5)
             
             # 막대 위에 값 표시
             for bar in bars:
@@ -145,6 +155,8 @@ with tab1:
                        f'{int(height)}',
                        ha='center', va='bottom', fontweight='bold', fontsize=11)
             
+            ax.set_xticks(range(len(cluster_count)))
+            ax.set_xticklabels(cluster_labels, fontsize=10)
             ax.set_xlabel("군집", fontsize=12, fontweight='bold')
             ax.set_ylabel("인원수", fontsize=12, fontweight='bold')
             ax.set_title("군집별 인원수 분포", fontsize=14, fontweight='bold', pad=20)
@@ -155,7 +167,7 @@ with tab1:
         with col2:
             st.subheader("군집 통계")
             stats_data = {
-                '군집': list(cluster_count.index),
+                '군집': cluster_labels,
                 '인원수': list(cluster_count.values),
                 '비율(%)': [f"{(v/len(df)*100):.1f}%" for v in cluster_count.values]
             }
@@ -176,6 +188,9 @@ with tab1:
             ]
         ].mean()
         
+        # 인덱스를 한글 이름으로 변경
+        cluster_profile.index = [cluster_name_mapping[i] for i in cluster_profile.index]
+        
         # 컬럼명을 설문 내용으로 변경
         cluster_profile_renamed = cluster_profile.copy()
         cluster_profile_renamed.columns = [variable_mapping[col] for col in cluster_profile_renamed.columns]
@@ -188,7 +203,7 @@ with tab1:
         st.header("4️⃣ 군집 해석")
         
         cluster_info = {
-            "Cluster 0": {
+            "비참여 중심 집단": {
                 "title": "🚫 비참여 중심 집단",
                 "icon": "⚠️",
                 "description": [
@@ -198,7 +213,7 @@ with tab1:
                 ],
                 "color": "#ff6b6b"
             },
-            "Cluster 1": {
+            "학교 중심 참여 집단": {
                 "title": "🏫 학교 중심 참여 집단",
                 "icon": "✅",
                 "description": [
@@ -208,7 +223,7 @@ with tab1:
                 ],
                 "color": "#4ecdc4"
             },
-            "Cluster 2": {
+            "적극 참여 집단": {
                 "title": "🌟 적극 참여 집단",
                 "icon": "⭐",
                 "description": [
@@ -218,7 +233,7 @@ with tab1:
                 ],
                 "color": "#95e1d3"
             },
-            "Cluster 3": {
+            "장시간 운동형 집단": {
                 "title": "💪 장시간 운동형 집단",
                 "icon": "🏋️",
                 "description": [
@@ -257,13 +272,13 @@ with tab1:
         st.warning("""
         💡 **정책 제언**
         
-        • **Cluster 0 (비참여 집단)**: 스포츠의 접근성과 흥미 유발 프로그램 필요
+        • **비참여 중심 집단**: 스포츠의 접근성과 흥미 유발 프로그램 필요
         
-        • **Cluster 1 (학교 중심)**: 학교 스포츠클럽 지원 강화 및 확대
+        • **학교 중심 참여 집단**: 학교 스포츠클럽 지원 강화 및 확대
         
-        • **Cluster 2 (적극 참여)**: 고급 프로그램 및 경쟁 기회 제공
+        • **적극 참여 집단**: 고급 프로그램 및 경쟁 기회 제공
         
-        • **Cluster 3 (장시간 운동)**: 전문 지도 및 부상 예방 교육 강화
+        • **장시간 운동형 집단**: 전문 지도 및 부상 예방 교육 강화
         """)
         
         st.info("""
@@ -425,10 +440,10 @@ streamlit run app.py
 ## 📊 분석 결과
 
 ### 4개 군집 분류
-1. **Cluster 0**: 🚫 비참여 중심 집단
-2. **Cluster 1**: 🏫 학교 중심 참여 집단
-3. **Cluster 2**: 🌟 적극 참여 집단
-4. **Cluster 3**: 💪 장시간 운동형 집단
+1. **비참여 중심 집단**: 🚫 학교스포츠클럽 비참여 중심
+2. **학교 중심 참여 집단**: 🏫 학교스포츠클럽 참여 집단
+3. **적극 참여 집단**: 🌟 지역사회 스포츠 적극 참여
+4. **장시간 운동형 집단**: 💪 1회 운동 시간이 매우 긴 집단
 
 ---
 
